@@ -1,1 +1,1 @@
-# This repository contains many machine learning resources
+# This repository contains many machine learning resources.
