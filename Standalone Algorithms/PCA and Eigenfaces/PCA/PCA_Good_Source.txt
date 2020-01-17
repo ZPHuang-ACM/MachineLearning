@@ -1,0 +1,5 @@
+1. covariance matrix: https://en.wikipedia.org/wiki/Covariance_matrix
+2. PCA: https://www.visiondummy.com/2014/04/geometric-interpretation-covariance-matrix/
+3. Rayleigh quotient: https://en.wikipedia.org/wiki/Rayleigh_quotient
+4. Math: https://www.youtube.com/watch?v=WW3ZJHPwvyg
+V'*Cox(X,X)*V = variance(V'*X) (can be easily verified!)
