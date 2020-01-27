@@ -12,6 +12,7 @@ function plotDecisionBoundary(theta, X, y)
 plotData(X(:,2:3), y);
 hold on
 
+% plot linear boundary 
 if size(X, 2) <= 3
     % Only need 2 points to define a line, so choose two endpoints
     plot_x = [min(X(:,2))-2,  max(X(:,2))+2];
@@ -25,6 +26,7 @@ if size(X, 2) <= 3
     % Legend, specific for the exercise
     legend('Admitted', 'Not admitted', 'Decision Boundary')
     axis([30, 100, 30, 100])
+% plot nonlinear boundary
 else
     % Here is the grid range
     u = linspace(-1, 1.5, 50);
@@ -40,7 +42,8 @@ else
     z = z'; % important to transpose z before calling contour
 
     % Plot z = 0
-    % Notice you need to specify the range [0, 0]
+    % Notice you need to specify the level [0, 0],means draw the contour line at
+    % height of 0 m.
     contour(u, v, z, [0, 0], 'LineWidth', 2)
 end
 hold off
