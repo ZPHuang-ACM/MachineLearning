@@ -1,1 +1,4 @@
 Week 1: linear regression One variable
+Week 2: linear regression Multiple variable
+Week 3: Logistic regression 
+Week 4: Neural Networks
