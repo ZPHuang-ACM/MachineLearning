@@ -37,16 +37,21 @@ grad = zeros(size(theta));
 %
 
 
+% Cost function is implemented in the vectorized case (check notes)
+h = sigmoid(X*theta); % g(X*theta), hypothesis function
+% do not regularize parameter theta_0
+J = ((-y'*log(h))-(1-y)'*log(1-h))/m + lambda/(2*m)*sum(theta(2:end).^2); 
 
+% gradient formula, refer to the notes, vector form
+grad = X'*(h-y)/m;
 
+% gradients of the regularization terms
+grad_reg = lambda/m*[0;theta(2:end)];
 
-
-
-
-
+% final gradient output = logistic regression + regularized output
+grad = grad+grad_reg;
 
 % =============================================================
-
 grad = grad(:);
 
 end
