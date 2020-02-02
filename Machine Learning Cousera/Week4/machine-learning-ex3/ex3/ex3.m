@@ -33,12 +33,13 @@ num_labels = 10;          % 10 labels, from 1 to 10
 fprintf('Loading and Visualizing Data ...\n')
 
 load('ex3data1.mat'); % training data stored in arrays X, y
-m = size(X, 1);
+m = size(X, 1); % m is 5000, we have 5000 rows (training data)
 
 % Randomly select 100 data points to display
-rand_indices = randperm(m);
-sel = X(rand_indices(1:100), :);
+rand_indices = randperm(m); % randperm = random permutation (useful command for randomize the data set)
+sel = X(rand_indices(1:100), :); % randomly select 100 data set
 
+% display the data set, it is a function file
 displayData(sel);
 
 fprintf('Program paused. Press enter to continue.\n');
