@@ -30,8 +30,8 @@ X = [ones(m, 1) X];
 %       for each row.
 %       
 
-p_matrix = X*all_theta'; % a column vector with size of 5000
-[M,p]=max(p_matrix,[],2); % return the matrix value in each row, M and the their corresponding index
+p_matrix = sigmoid(X*all_theta'); % a column vector with size of 5000
 
+[M,p]=max(p_matrix,[],2); % return the matrix value in each row, M and the their corresponding index
 % =========================================================================
 end

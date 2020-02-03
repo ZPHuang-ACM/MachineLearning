@@ -54,11 +54,14 @@ for i = 1:num_labels
     
     % Separate y=i and the rest as two groups, so that we can reapply the
     % method we used for two classes!
-    if i == 10 % we treat 10 as digit 0
-        y_new = y == 0; % special case
-    else
-        y_new = y==i;
-    end
+%     if i == 10 % we treat 10 as digit 0
+%         y_new = y == 0; % special case
+%     else
+%         y_new = y==i;
+%     end
+    
+    % in the y data, y =10 denotes 0
+     y_new = y==i;
     
     % Set Initial theta for fmin
     initial_theta = zeros(n + 1, 1);
