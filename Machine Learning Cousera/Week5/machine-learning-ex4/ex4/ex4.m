@@ -19,7 +19,7 @@
 clear ; close all; clc
 
 %% Setup the parameters you will use for this exercise
-input_layer_size  = 400;  % 20x20 Input Images of Digits
+input_layer_size  = 400;  % 20x20 Input Images of Digits, 400 features
 hidden_layer_size = 25;   % 25 hidden units
 num_labels = 10;          % 10 labels, from 1 to 10   
                           % (note that we have mapped "0" to label 10)
@@ -33,12 +33,13 @@ num_labels = 10;          % 10 labels, from 1 to 10
 fprintf('Loading and Visualizing Data ...\n')
 
 load('ex4data1.mat');
-m = size(X, 1);
+m = size(X, 1); % # of training examples; m = 5000;
 
 % Randomly select 100 data points to display
-sel = randperm(size(X, 1));
-sel = sel(1:100);
+sel = randperm(size(X, 1)); % random permutation
+sel = sel(1:100); % selelct 100 random training examples to display!
 
+% A function for visulizing the dataset
 displayData(X(sel, :));
 
 fprintf('Program paused. Press enter to continue.\n');
