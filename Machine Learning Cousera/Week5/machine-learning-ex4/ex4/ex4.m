@@ -184,7 +184,7 @@ fprintf('\nTraining Neural Network... \n')
 
 %  After you have completed the assignment, change the MaxIter to a larger
 %  value to see how more training helps.
-options = optimset('MaxIter', 50);
+options = optimset('MaxIter', 100);
 
 %  You should also try different values of lambda
 lambda = 1;
@@ -217,6 +217,10 @@ pause;
 
 fprintf('\nVisualizing Neural Network... \n')
 
+% Theta1 matrix has 401 columns (features 20x20 pixels + 1 bias term), and
+% 25 rows (hidden units), here we display (visualize) the weights for each
+% hidden uint but discard the bias weight. We visualize the weights using 20x20
+% pixel grayscale pictures.
 displayData(Theta1(:, 2:end));
 
 fprintf('\nProgram paused. Press enter to continue.\n');
@@ -228,6 +232,8 @@ pause;
 %  neural network to predict the labels of the training set. This lets
 %  you compute the training set accuracy.
 
+% Pred is a 5000x1 column vector i.e. [1,2,10,5,1,...]
+% Using the trained weight matrices to predict the output
 pred = predict(Theta1, Theta2, X);
 
 fprintf('\nTraining Set Accuracy: %f\n', mean(double(pred == y)) * 100);
