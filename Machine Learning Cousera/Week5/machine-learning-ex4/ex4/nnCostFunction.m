@@ -38,9 +38,24 @@ Theta2_grad = zeros(size(Theta2));
 %         variable J. After implementing Part 1, you can verify that your
 %         cost function computation is correct by verifying the cost
 %         computed in ex4.m
-y_predict = 
+y_predict = predict(Theta1, Theta2, X); % feedforward NN prediction
 
-J = 
+% y_predict is a mx1 column vector, i.e. [1,2,10,7,..]';
+% Here we need to reroll it to [1,0,0..],[0,1,0,..] format
+% we can use "sub2ind" function to achieve this
+% https://www.mathworks.com/matlabcentral/answers/164993-how-to-use-a-vector-as-indices-for-matrix
+ num_column = numel(y_predict); % # of columns
+ num_rows = max(y_predict); % # of rows
+ idx = sub2ind
+ 
+
+
+for i = 1:m
+    y_predict_i = zeros(k,1);
+    y_predict_i(y_predict(i)) = 
+    J = J + sum()
+end
+
 
 
 
