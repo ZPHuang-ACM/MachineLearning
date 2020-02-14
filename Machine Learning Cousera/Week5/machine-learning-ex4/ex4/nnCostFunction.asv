@@ -38,25 +38,35 @@ Theta2_grad = zeros(size(Theta2));
 %         variable J. After implementing Part 1, you can verify that your
 %         cost function computation is correct by verifying the cost
 %         computed in ex4.m
-y_predict = predict(Theta1, Theta2, X); % feedforward NN prediction
+y_predict = predict_out(Theta1, Theta2, X); % feedforward NN prediction
 
 % y_predict is a mx1 column vector, i.e. [1,2,10,7,..]';
 % Here we need to reroll it to [1,0,0..],[0,1,0,..] format
-% we can use sub2ind function to 
+% we can use "sub2ind" function to achieve this
+% https://www.mathworks.com/matlabcentral/answers/164993-how-to-use-a-vector-as-indices-for-matrix
+ 
+ % we apply the same procedures to the y vector
+ num_columns = numel(y); % # of columns
+ num_rows = max(y); % # of rows
+ idx = sub2ind([num_rows,num_columns],y',1:num_columns);
+ out = zeros(num_rows,num_columns);
+ out(idx)=1;
+ % unroll the y_predict data to a single long vector
+ y_unrolled = out(:); % recored output
 
+% calculate the cost function
+J = sum(-y_unrolled.*log(y_predict)-(1-y_unrolled).*log(1-y_predict))/m;
 
-for i = 1:m
-    y_predict_i = zeros(k,1);
-    y_predict_i(y_predict(i)) = 
-    J = J + sum()
-end
+% excluding the bias gains
+Theta1_unbiased = Theta1(:,2:end);
+Theta2_unbiased = Theta2(:,2:end);
 
+% regularization cost function
+J_regularization = lambda*(sum(sum(Theta1_unbiased.^2)) + sum(sum(Theta2_unbiased.^2)))/(2*m);
 
+% final cost function
+J = J+J_regularization;
 
-
-
-
-%
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
 %         the cost function with respect to Theta1 and Theta2 in Theta1_grad and
@@ -71,17 +81,29 @@ end
 %         Hint: We recommend implementing backpropagation using a for-loop
 %               over the training examples if you are implementing it for the 
 %               first time.
-%
-% Part 3: Implement regularization with the cost function and gradients.
-%
-%         Hint: You can implement this around the code for
-%               backpropagation. That is, you can compute the gradients for
-%               the regularization separately and then add them to Theta1_grad
-%               and Theta2_grad from Part 2.
-%
+for i = 1:m
+    % step 1, forward prop
+    a1 = X(i,:)'; a1 = [1:a1]; % add 1, bias
+    z2 = Theta1*a1; a2 = sigmoid(z2); a2 = [1;a2]; % add 1, bias
+    z3 = Theta2*a2; a3 = sigmoid(z3); % the hypothesis output
+    
+    % step 2, delta 3
+    yi = zeros(num_labels,1); % convert to [0,0,1,0,..]' format
+    yi(y(i)) = 1;
+    delta3 = a3 - yi;
+    
+    % step 3, delta 2
+    delta2 = Theta2'*delta3.*sigmoidGradient(z2);
+    delta2 = delta2(2:end); % remove delta2_0 term, important!
+    
+    % step 4, Accumulate the gradient
+    Theta1_grad = Theta1_grad + delta2*a1';
+    Theta2_grad = Theta2_grad + delta3*a2';
+end
 
+% step 5
+Theta1_grad
 
-% -------------------------------------------------------------
 
 % =========================================================================
 

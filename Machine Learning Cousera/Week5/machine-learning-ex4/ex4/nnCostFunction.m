@@ -57,7 +57,16 @@ y_predict = predict_out(Theta1, Theta2, X); % feedforward NN prediction
 % calculate the cost function
 J = sum(-y_unrolled.*log(y_predict)-(1-y_unrolled).*log(1-y_predict))/m;
 
-%
+% excluding the bias gains
+Theta1_unbiased = Theta1(:,2:end);
+Theta2_unbiased = Theta2(:,2:end);
+
+% regularization cost function
+J_regularization = lambda*(sum(sum(Theta1_unbiased.^2)) + sum(sum(Theta2_unbiased.^2)))/(2*m);
+
+% final cost function
+J = J+J_regularization;
+
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
 %         the cost function with respect to Theta1 and Theta2 in Theta1_grad and
@@ -72,22 +81,43 @@ J = sum(-y_unrolled.*log(y_predict)-(1-y_unrolled).*log(1-y_predict))/m;
 %         Hint: We recommend implementing backpropagation using a for-loop
 %               over the training examples if you are implementing it for the 
 %               first time.
-%
-% Part 3: Implement regularization with the cost function and gradients.
-%
-%         Hint: You can implement this around the code for
-%               backpropagation. That is, you can compute the gradients for
-%               the regularization separately and then add them to Theta1_grad
-%               and Theta2_grad from Part 2.
-%
+for i = 1:m
+    % step 1, forward prop
+    a1 = X(i,:)'; a1 = [1;a1]; % add 1, bias
+    size(a1);
+    z2 = Theta1*a1; a2 = sigmoid(z2); a2 = [1;a2]; % add 1, bias
+    z3 = Theta2*a2; a3 = sigmoid(z3); % the hypothesis output
+    
+    % step 2, delta 3
+    yi = zeros(num_labels,1); % convert to [0,0,1,0,..]' format
+    yi(y(i)) = 1;
+    delta3 = a3 - yi;
+    
+    % step 3, delta 2
+    delta2 = Theta2'*delta3.*[0;sigmoidGradient(z2)];
+    delta2 = delta2(2:end); % remove delta2_0 term, important!
+    
+    % step 4, Accumulate the gradient
+    Theta1_grad = Theta1_grad + delta2*a1';
+    Theta2_grad = Theta2_grad + delta3*a2';
+end
 
-
-% -------------------------------------------------------------
+% step 5
+Theta1_grad = Theta1_grad/m;
+Theta2_grad = Theta2_grad/m;
 
 % =========================================================================
 
+% gradient regularization 
+Theta1_regularization = Theta1*lambda/m; 
+Theta1_regularization = [zeros(size(Theta1_regularization,1),1),Theta1_regularization(:,2:end)];
+Theta2_regularization = Theta2*lambda/m; 
+Theta2_regularization = [zeros(size(Theta2_regularization,1),1),Theta2_regularization(:,2:end)];
+
+Theta1_grad = Theta1_grad + Theta1_regularization;
+Theta2_grad = Theta2_grad + Theta2_regularization;
+
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
-
 
 end
