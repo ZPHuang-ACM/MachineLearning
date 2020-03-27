@@ -25,13 +25,12 @@ m = size(X,1);
 for i = 1:m % m samples
     % initial guess idx(i)
     idx(i) = 1;
-    distance_min = (norm(X(i,:)-centroids(1,:)))^2;
+    distance_min = (norm(X(i,:)-centroid(1,:)))^2;
     for j = 2:K % K centroid
-        distance = (norm(X(i,:)-centroids(j,:)))^2;
+        distance = (norm(X(i,:)-centroid(j,:)))^2;
         if distance<distance_min
-            % update a the min distance and the new index when a closer centroid is found
             distance_min = distance;
-            idx(i) = j;
+            
         end
     end
 end
