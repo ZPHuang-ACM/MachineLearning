@@ -11,7 +11,7 @@ function centroids = computeCentroids(X, idx, K)
 %
 
 % Useful variables
-[m n] = size(X);
+[m n] = size(X); % m samples, n dimensional
 
 % You need to return the following variables correctly.
 centroids = zeros(K, n);
@@ -25,16 +25,11 @@ centroids = zeros(K, n);
 %
 % Note: You can use a for-loop over the centroids to compute this.
 %
-
-
-
-
-
-
-
+for i = 1:K % loop over K clusters
+    cluster_index = find(idx==i); % find the index of all the samples belong to cluster i
+    centroids(i,:)=mean(X(cluster_index,:));
+end
 
 % =============================================================
-
-
 end
 
