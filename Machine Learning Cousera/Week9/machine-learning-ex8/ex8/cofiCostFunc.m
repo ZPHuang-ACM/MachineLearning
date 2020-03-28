@@ -40,14 +40,27 @@ Theta_grad = zeros(size(Theta));
 %                     partial derivatives w.r.t. to each element of Theta
 %
 
+% cost function
+J = sum((X*Theta'-Y).^2.*R,'all')/2+lambda/2*sum(Theta.^2,'all')+lambda/2*sum(X.^2,'all');
 
 
+% Graidents, here we should use a piece of paper to get confused by the matrix
+% dimensions and operations
+% row-wise
+for i = 1:num_movies
+    idx = find(R(i,:)==1); % nonzero rating
+    Theta_temp = Theta(idx,:);
+    Y_temp = Y(i,idx); % ratings, row vector
+    X_grad(i,:) = (X(i,:)*Theta_temp'-Y_temp)*Theta_temp + lambda*X(i,:); 
+end
 
-
-
-
-
-
+% column-wise
+for i = 1:num_users
+    idx = find(R(:,i)==1); % nonzero ratings
+    X_temp = X(idx,:);
+    Y_temp = Y(idx,i);
+    Theta_grad(i,:) = (Theta(i,:)*X_temp'-Y_temp')*X_temp + lambda*Theta(i,:);
+end
 
 
 

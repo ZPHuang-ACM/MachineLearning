@@ -21,9 +21,9 @@ sigma2 = zeros(n, 1);
 %               should contain variance of the i-th feature.
 %
 
+mu = mean(X)';
 
-
-
+sigma2 = mean((X-kron(ones(m,1),mu')).^2)';
 
 
 
