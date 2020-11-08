@@ -2,3 +2,5 @@
 
 2. Videos
    https://www.mathworks.com/videos/reinforcement-learning-part-1-what-is-reinforcement-learning-1551974943006.html
+
+3. https://www.youtube.com/watch?v=a4bdb6L8DHo&list=UUgdHSFcXvkN6O3NXvif0-pA&index=278
