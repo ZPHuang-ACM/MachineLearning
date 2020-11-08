@@ -1,6 +1,7 @@
 1. https://www.mathworks.com/campaigns/offers/reinforcement-learning-with-matlab-training-deployment-ebook.confirmation.html?s_v1=29559&elqem=2967120_EM_NA_DIR_20-01_MOE-EDU&elqTrackId=a62dd85bcd7543ceaa50ceb981b8aa0d&elq=742050f467f34b58b85e8d872b81993e&elqaid=29559&elqat=1&elqCampaignId=10699&ab_test=b_version
 
-2. Videos
-   https://www.mathworks.com/videos/reinforcement-learning-part-1-what-is-reinforcement-learning-1551974943006.html
+2. Videos (5 videos)
+   https://www.mathworks.com/videos/series/reinforcement-learning.html
 
-3. https://www.youtube.com/watch?v=a4bdb6L8DHo&list=UUgdHSFcXvkN6O3NXvif0-pA&index=278
+3. Universal function approximator using NN:
+   https://towardsdatascience.com/can-neural-networks-really-learn-any-function-65e106617fc6
