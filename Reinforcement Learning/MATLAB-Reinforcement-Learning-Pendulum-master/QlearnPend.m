@@ -20,6 +20,7 @@ close all;
 %% SETTINGS
 
 %%% What do we call good?
+% maximize reward; we posssibly incorporate the -ve control input in the reward function
 rewardFunc = @(x,xdot)(-(abs(x)).^2 + -0.25*(abs(xdot)).^2); % Reward is -(quadratic error) from upright position. Play around with different things!
 
 %%% Confidence in new trials?
