@@ -68,7 +68,7 @@ if doVid
     open(writerObj);
 end
 
-%% Discretize the state so we can start to learn a value map
+%% Discretize the state so we can start to learn a value map ?Using Q-Table?
 % State1 is angle -- play with these for better results. Faster convergence
 % with rough discretization, less jittery with fine.
 x1 = -pi:0.05:pi;
