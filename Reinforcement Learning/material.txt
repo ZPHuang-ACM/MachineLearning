@@ -5,3 +5,8 @@
 
 3. Universal function approximator using NN:
    https://towardsdatascience.com/can-neural-networks-really-learn-any-function-65e106617fc6
+
+
+RL： Material
+1. https://www.davidsilver.uk/teaching/
+2. http://rail.eecs.berkeley.edu/deeprlcourse/
