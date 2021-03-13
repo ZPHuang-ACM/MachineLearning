@@ -1,66 +1,64 @@
 function QlearnPend
-%% Example reinforcement learning - Q-learning code
+%% Example reinforcement learning - Q-learning code (Q-Table, Discetize the whole state sapce)
 % Learn a control policy to optimally swing a pendulum from vertical down,
-% to vertical up with torque limits and (potentially) noise. Both the
-% pendulum and the policy are animated as the process is going. The
-% difference from dynamic programming, for instance, is that the policy is
-% learned only by doing forward simulation. No knowledge of the dynamics is
-% used to make the policy.
+% to vertical up with torque limits and (potentially) noise. 
+% Both the pendulum and the policy are animated as the process is going.
+% The difference from dynamic programming (Divide and Conquer, Recursive method), 
+% for instance, is that the policy is learned only by doing forward simulation.
+% No knowledge of the dynamics is used to make the policy (Model Free RL).
 %   
 % Play around with the learning settings below. I'm sure they could be
 % improved greatly!
-%
-%   Video: https://www.youtube.com/watch?v=YLAWnYAsai8
-%
-%   Matthew Sheen, 2015
+% Try Model-Based RL algorithm ? (Using NN-based policy, actor-critic algorithms?)
 %
 
 close all;
-
 %% SETTINGS
 
-%%% What do we call good?
-rewardFunc = @(x,xdot)(-(abs(x)).^2 + -0.25*(abs(xdot)).^2); % Reward is -(quadratic error) from upright position. Play around with different things!
+% What do we call good?
+% Reward is -(quadratic error) from upright position. Play around with different things!
+% Reward function? maximize reward = minimize cost (We can possibly include control input here)
+rewardFunc = @(x,xdot)(-(abs(x)).^2 -0.25*(abs(xdot)).^2); 
 
-%%% Confidence in new trials?
-learnRate = 0.99; % How is new value estimate weighted against the old (0-1). 1 means all new and is ok for no noise situations.
+% Confidence in new trials?
+% How is new value estimate weighted against the old (0-1). 1 means all new and is ok for no noise situations.
+learnRate = 0.99; 
 
-%%% Exploration vs. exploitation
+% Exploration vs. exploitation
 % Probability of picking random action vs estimated best action
 epsilon = 0.5; % Initial value
 epsilonDecay = 0.98; % Decay factor per iteration.
 
-%%% Future vs present value
+% Future vs present value
 discount = 0.9; % When assessing the value of a state & action, how important is the value of the future states?
 
-%%% Inject some noise?
+%Inject some noise?
 successRate = 1; % How often do we do what we intend to do?
 % E.g. What if I'm trying to turn left, but noise causes
 % me to turn right instead. This probability (0-1) lets us
 % try to learn policies robust to "accidentally" doing the
 % wrong action sometimes.
 
-winBonus = 100;  % Option to give a very large bonus when the system reaches the desired state (pendulum upright).
+% Option to give a very large bonus when the system reaches the desired state (pendulum upright).
+winBonus = 100;  
 
-startPt = [pi,0]; % Start every episode at vertical down.
+% Start every episode at vertical down.
+startPt = [pi,0]; 
 
-maxEpi = 2000; % Each episode is starting with the pendulum down and doing continuous actions for awhile.
-maxit = 1500; % Iterations are the number of actions taken in an episode.
+maxEpi = 2000; % Each episode is starting with the pendulum down and doing continuous actions for awhile. (Run 2000 trials)
+maxit = 1500; % Iterations are the number of actions taken in an episode. (Each trial run 1500 control action steps)
 substeps = 2; % Number of physics steps per iteration (could be 1, but more is a little better integration of the dynamics)
-dt = 0.05; % Timestep of integration. Each substep lasts this long
+dt = 0.05; % Timestep of integration. Each substep lasts this long (10 Hz for each control action00000000000000000000000000000000000000000000, can be a bit )
 
 % Torque limits -- bang-bang control
 tLim = 1;
-actions = [0, -tLim, tLim]; % Only 3 options, Full blast one way, the other way, and off.
-
-
-% Make the un-updated values on the value map transparent. If not, then
-% we see the reward function underneath.
+actions = [0, -tLim, tLim]; % Only 3 options, Full blast one way, the other way, and off. 
+% Make the un-updated values on the value map transparent. 
+% If not, then we see the reward function underneath.
 transpMap = true;
 
-% Write to video?
+% for writing file to videos
 doVid = false;
-
 if doVid
     writerObj = VideoWriter('qlearnVid.mp4','MPEG-4');
     writerObj.FrameRate = 60;
@@ -293,11 +291,14 @@ end
 
 end
 
+
+%% Simplied Agent Dynamics
 function zdot = Dynamics(z,T)
-% Pendulum with motor at the joint dynamics. IN - [angle,rate] & torque.
+% Pendulum with motor at the joint dynamics. 
+% IN - [angle,rate](z) & torque(T).
 % OUT - [rate,accel]
-g = 1;
-L = 1;
-z = z';
-zdot = [z(2) g/L*sin(z(1))+T];
+g = 1; % gravity constant
+L = 1; % arm length
+z = z'; % z = [theta, theta_dot], state, vertical up: theta = 0; vertical down: theta = pi
+zdot = [z(2) g/L*sin(z(1))+T]; % this is a simplfied model
 end
