@@ -175,6 +175,9 @@ for episodes = 1:maxEpi
         
         % Interpolate the state within our discretization (ONLY for choosing
         % the action. We do not actually change the state by doing this!)
+        % note here we select state index based on the minimum error from the actual state z1 
+        % It is more intuitive when combined with the Q-table (sIdx stands for state index)
+        % z1 is the current system state, we use minimum error to find its corresponding state in the Q-Table
         [~,sIdx] = min(sum((states - repmat(z1,[size(states,1),1])).^2,2)); % return the indices of min along each row
         
         % Choose an action:
@@ -207,6 +210,7 @@ for episodes = 1:maxEpi
             end
         end
         
+        % update the state
         z1 = z2; % Old state = new state
         
         
@@ -221,10 +225,13 @@ for episodes = 1:maxEpi
             success = false;
         end
         
-        [~,snewIdx] = min(sum((states - repmat(z1,[size(states,1),1])).^2,2)); % Interpolate again to find the new state the system is closest to.
+        % Interpolate again to find the new state the system is closest to.
+        [~,snewIdx] = min(sum((states - repmat(z1,[size(states,1),1])).^2,2));
         
-        if episodes ~= maxEpi % On the last iteration, stop learning and just execute. Otherwise...
-            % Update Q
+        % On the last iteration, stop learning and just execute. Otherwise...
+        if episodes ~= maxEpi
+            % Update Q (Using the Bellman equation (Discrete version of HJB equation), aka Dynamic programming)
+            % Again, more intuitive when viewed from a Q-Table
             Q(sIdx,aIdx) = Q(sIdx,aIdx) + learnRate * ( R(snewIdx) + discount*max(Q(snewIdx,:)) - Q(sIdx,aIdx) + bonus );
             
             % Lets break this down:
@@ -245,20 +252,20 @@ for episodes = 1:maxEpi
             %   5) Bonus - I choose to give a big boost of it's reached the
             %      goal state. Optional and not really conventional.
         end
-        
+       
         % Decay the odds of picking a random action vs picking the
         % estimated "best" action. I.e. we're becoming more confident in
         % our learned Q.
         epsilon = epsilon*epsilonDecay;
         
         %% UPDATE PLOTS
-        
         if episodes>0
             % Pendulum state:
             set(f,'XData',[0 -sin(z1(1))]);
             set(f,'YData',[0 cos(z1(1))]);
             
             % Green tracer point:
+            % find Subscripts (e.g 2x3) from linear index (vector), just type help ind2sub for more info
             [newy,newx] = ind2sub([length(x2),length(x1)],snewIdx); % Find the 2d index of the 1d state index we found above
             set(pathmap,'XData',newx);
             set(pathmap,'YData',newy);
@@ -270,7 +277,7 @@ for episodes = 1:maxEpi
             if transpMap
                 set(map,'AlphaData',fullV~=Vorig); % Some spots have not changed from original. If not, leave them transparent.
             end
-            drawnow;
+            drawnow; % Update figure windows and process callbacks
             
             % Take a video frame if turned on.
             if doVid
@@ -280,6 +287,7 @@ for episodes = 1:maxEpi
         end
         
         % End this episode if we've hit the goal point (upright pendulum).
+        % If we successively bring the pendulum to upright position with small velocity, we break this episode
         if success
             break;
         end
