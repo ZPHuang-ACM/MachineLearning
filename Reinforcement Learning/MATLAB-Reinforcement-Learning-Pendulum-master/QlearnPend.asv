@@ -74,7 +74,7 @@ x1 = -pi:0.05:pi;
 %State2 angular rate
 x2 = -pi:0.1:pi;
 
-%Generate a state list and initialize the state matrix with all possible state combinations
+%Generate a state list
 states=zeros(length(x1)*length(x2),2); % 2 Column matrix of all possible combinations of the discretized state.
 index=1;
 for j=1:length(x1)
@@ -101,16 +101,16 @@ end
 % might have a very good reward value, but a very bad set of Q values since
 % many, many more actions are required to get to the goal.
 
-% check the reinforcement learning MATLAB lecture 3 Q-Table for more info
 R = rewardFunc(states(:,1),states(:,2)); % Initialize the "cost" of a given state to be quadratic error from the goal state. Note the signs mean that -angle with +velocity is better than -angle with -velocity
 Q = repmat(R,[1,3]); % Q is length(x1) x length(x2) x length(actions) - IE a bin for every action-state combination.
+
 
 % V will be the best of the Q actions at every state. This is only
 % important for my plotting. Not algorithmically significant. I leave
 % values we haven't updated at 0, so they appear as blue (unexplored) areas
 % in the plot.
 V = zeros(size(states,1),1);
-Vorig = reshape(max(Q,[],2),[length(x2),length(x1)]); % x2 in rows, x1 in columns, max(Q,[],2) finds the max on each row of Q, then reshape the vector
+Vorig = reshape(max(Q,[],2),[length(x2),length(x1)]);
 
 %% Set up the pendulum plot
 panel = figure;
@@ -120,7 +120,7 @@ subplot(1,4,1)
 
 hold on
 % Axis for the pendulum animation
-f = plot(0,0,'b','LineWidth',10); % Pendulum stick in blue
+f = plot(0,0,'b','LineWidth',10); % Pendulum stick
 axPend = f.Parent;
 axPend.XTick = []; % No axis stuff to see
 axPend.YTick = [];
@@ -134,10 +134,10 @@ plot(0.001,0,'.k','MarkerSize',50); % Pendulum axis point
 hold off
 
 %% Set up the state-value map plot (displays the value of the best action at every point)
-colormap('hot'); % colormap map sets the colormap for the current figure to one of the predefined colormaps
+colormap('hot');
 subplot(1,4,[2:4]);
 hold on
-map = imagesc(reshape(R,[length(x2),length(x1)])); % Display image with scaled colors
+map = imagesc(reshape(R,[length(x2),length(x1)]));
 axMap = map.Parent;
 axMap.XTickLabels = {'-pi' '0' 'pi'};
 axMap.XTick = [1 floor(length(x1)/2) length(x1)];
@@ -151,19 +151,19 @@ axMap.XLim = [1 length(x1)];
 axMap.YLim = [1 length(x2)];
 axMap.Box = 'off';
 axMap.FontSize = 14;
-caxis([3*min(R),max(R)]) % sets the colormap limits for the current axes. limits is a two-element vector of the form [cmin cmax]
+caxis([3*min(R),max(R)])
 pathmap = plot(NaN,NaN,'.g','MarkerSize',30); % The green marker that travels through the state map to match the pendulum animation
-map.CData = V; % Image color data, specified in one of these forms: Vector or matrix — This format defines indexed image data.
+map.CData = V;
 hold off
 
 %% Start learning!
 
-% Number of episodes or "resets" (2000)
+% Number of episodes or "resets"
 for episodes = 1:maxEpi
     
     z1 = startPt; % Reset the pendulum on new episode.
     
-    % Number of actions we're willing to try before a reset (1500)
+    % Number of actions we're willing to try before a reset
     for g = 1:maxit
         
         % Stop if the figure window is closed.
@@ -175,7 +175,7 @@ for episodes = 1:maxEpi
         
         % Interpolate the state within our discretization (ONLY for choosing
         % the action. We do not actually change the state by doing this!)
-        [~,sIdx] = min(sum((states - repmat(z1,[size(states,1),1])).^2,2)); % return the indices of min along each row
+        [~,sIdx] = min(sum((states - repmat(z1,[size(states,1),1])).^2,2));
         
         % Choose an action:
         % EITHER 1) pick the best action according the Q matrix (EXPLOITATION). OR
@@ -183,7 +183,7 @@ for episodes = 1:maxEpi
         if (rand()>epsilon || episodes == maxEpi) && rand()<=successRate % Pick according to the Q-matrix it's the last episode or we succeed with the rand()>epsilon check. Fail the check if our action doesn't succeed (i.e. simulating noise)
             [~,aIdx] = max(Q(sIdx,:)); % Pick the action the Q matrix thinks is best!
         else
-            aIdx = randi(length(actions),1); % Random action; randi returns a random integer from 1:length(actions)
+            aIdx = randi(length(actions),1); % Random action!
         end
         
         T = actions(aIdx);
@@ -191,7 +191,7 @@ for episodes = 1:maxEpi
         %% STEP DYNAMICS FORWARD
         
         % Step the dynamics forward with our new action choice
-        % RK4 Loop - Numerical integration (Fouth Order Runge-Kutta Algorithm)
+        % RK4 Loop - Numerical integration
         for i = 1:substeps
             k1 = Dynamics(z1,T);
             k2 = Dynamics(z1+dt/2*k1,T);
